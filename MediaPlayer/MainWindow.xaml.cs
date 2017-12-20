@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Forms;
 
 namespace MediaPlayer
 {
@@ -27,7 +28,19 @@ namespace MediaPlayer
 
         private void addMusicButton_Click(object sender, RoutedEventArgs e)
         {
+            FolderBrowserDialog fbd = new FolderBrowserDialog();
+             if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                DirectoryInfo di = new DirectoryInfo(fbd.SelectedPath);
 
+                foreach (var item in di.GetFiles())
+                {
+                    if (item.Extension == ".mp3")
+                    {
+                        listBox.Items.Add(item);
+                    }
+                }
+            }
         }
 
         private void playButton_Click(object sender, RoutedEventArgs e)
