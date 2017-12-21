@@ -33,6 +33,8 @@ namespace MediaPlayer
             FolderBrowserDialog fbd = new FolderBrowserDialog();
             if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
+                listBox.Items.Clear();
+
                 DirectoryInfo di = new DirectoryInfo(fbd.SelectedPath);
 
                 foreach (var item in di.GetFiles())
