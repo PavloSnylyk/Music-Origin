@@ -49,12 +49,20 @@ namespace MediaPlayer
 
         private void playButton_Click(object sender, RoutedEventArgs e)
         {
+            if (mediaEl.Source == null)
+            {
+                FileInfo fi = listBox.SelectedItem as FileInfo;
+                mediaEl.Source = new Uri(fi.FullName, UriKind.Relative);
+                mediaEl.Play();
+            }
 
+            else
+                mediaEl.Play();
         }
 
         private void pauseButton_Click(object sender, RoutedEventArgs e)
         {
-
+            mediaEl.Pause();
         }
 
         private void nextSongButton_Click(object sender, RoutedEventArgs e)
@@ -70,6 +78,18 @@ namespace MediaPlayer
         private void randomButton_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void listBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            FileInfo fi = listBox.SelectedItem as FileInfo;
+
+            if (listBox.SelectedIndex != -1)
+            {
+                mediaEl.Source = new Uri(fi.FullName, UriKind.Relative);
+                mediaEl.Play();
+                listBox.SelectedIndex = -1;
+            }
         }
     }
 }
