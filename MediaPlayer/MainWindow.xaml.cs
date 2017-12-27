@@ -27,10 +27,10 @@ namespace MediaPlayer
             InitializeComponent();
         }
 
-        private void addMusicButton_Click(object sender, RoutedEventArgs e)
+        private void AddMusicButton(object sender, RoutedEventArgs e)
         {
-
             FolderBrowserDialog fbd = new FolderBrowserDialog();
+
             if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 listBox.Items.Clear();
@@ -47,49 +47,78 @@ namespace MediaPlayer
             }
         }
 
-        private void playButton_Click(object sender, RoutedEventArgs e)
+        private void PlayButton(object sender, RoutedEventArgs e)
         {
+
             if (mediaEl.Source == null)
             {
-                FileInfo fi = listBox.SelectedItem as FileInfo;
-                mediaEl.Source = new Uri(fi.FullName, UriKind.Relative);
-                mediaEl.Play();
+                listBox.SelectedIndex++;
             }
 
-            else
-                mediaEl.Play();
+            if (!listBox.Items.IsEmpty)
+            {
+                PlaySelectedItem();
+            }
         }
 
-        private void pauseButton_Click(object sender, RoutedEventArgs e)
+        private void PauseButton(object sender, RoutedEventArgs e)
         {
             mediaEl.Pause();
         }
 
-        private void nextSongButton_Click(object sender, RoutedEventArgs e)
+        private void NextSongButton(object sender, RoutedEventArgs e)
         {
 
+            int listBoxIndexCount = listBox.Items.Count - 1;
+            int selectedIndex = listBox.SelectedIndex;
+
+            // if choosen element and song not last
+            if (selectedIndex != -1 && selectedIndex < listBoxIndexCount)
+            {
+                listBox.SelectedIndex++;
+                PlaySelectedItem();
+            }
         }
 
-        private void previousSongButton_Click(object sender, RoutedEventArgs e)
+        private void PreviousSongButton(object sender, RoutedEventArgs e)
         {
+            int listBoxIndexCount = listBox.Items.Count - 1;
+            int selectedIndex = listBox.SelectedIndex;
 
+            // if choosen element and song not first
+            if (selectedIndex != -1 && selectedIndex <= listBoxIndexCount && selectedIndex != 0)
+            {
+                listBox.SelectedIndex--;
+                PlaySelectedItem();
+            }
         }
 
-        private void randomButton_Click(object sender, RoutedEventArgs e)
+        private void RandomButton(object sender, RoutedEventArgs e)
         {
+            int listBoxIndexCount = listBox.Items.Count - 1;
+
+            // if listBox have at least one element
+            if (listBoxIndexCount != -1)
+            {
+                listBox.SelectedIndex = new Random().Next(0, listBoxIndexCount);
+                PlaySelectedItem();
+            }
 
         }
-
-        private void listBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void MusicListBox(object sender, MouseButtonEventArgs e)
         {
-            FileInfo fi = listBox.SelectedItem as FileInfo;
 
             if (listBox.SelectedIndex != -1)
             {
-                mediaEl.Source = new Uri(fi.FullName, UriKind.Relative);
-                mediaEl.Play();
+                PlaySelectedItem();
                 listBox.SelectedIndex = -1;
             }
+        }
+        private void PlaySelectedItem()
+        {
+            FileInfo fi = listBox.SelectedItem as FileInfo;
+            mediaEl.Source = new Uri(fi.FullName, UriKind.Relative);
+            mediaEl.Play();
         }
     }
 }
