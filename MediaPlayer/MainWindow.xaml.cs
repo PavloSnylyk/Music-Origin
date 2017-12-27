@@ -27,6 +27,7 @@ namespace MediaPlayer
             InitializeComponent();
         }
 
+        public int SelectedIndex { get; set; }
         private void AddMusicButton(object sender, RoutedEventArgs e)
         {
             FolderBrowserDialog fbd = new FolderBrowserDialog();
@@ -46,24 +47,34 @@ namespace MediaPlayer
                 }
             }
         }
-
         private void PlayButton(object sender, RoutedEventArgs e)
         {
-
-            if (mediaEl.Source == null)
+            // Selected first item if any item not selected
+            if (listBox.SelectedIndex == -1)
             {
-                listBox.SelectedIndex++;
+                listBox.SelectedIndex = 0;
             }
-
-            if (!listBox.Items.IsEmpty)
+            // If music play and selected index equals music what play
+            if (!mediaEl.IsEnabled && listBox.SelectedIndex == SelectedIndex)
             {
-                PlaySelectedItem();
+                mediaEl.Pause();
+                mediaEl.IsEnabled = true;
             }
-        }
-
-        private void PauseButton(object sender, RoutedEventArgs e)
-        {
-            mediaEl.Pause();
+            else
+            {
+                // If listbox have at least one item and selected index not equals music what play now
+                if (!listBox.Items.IsEmpty && listBox.SelectedIndex != SelectedIndex)
+                {
+                    PlaySelectedItem();
+                    mediaEl.IsEnabled = false;
+                }
+                // Resume music
+                else
+                {
+                    mediaEl.Play();
+                    mediaEl.IsEnabled = false;
+                }
+            }
         }
 
         private void NextSongButton(object sender, RoutedEventArgs e)
@@ -72,7 +83,7 @@ namespace MediaPlayer
             int listBoxIndexCount = listBox.Items.Count - 1;
             int selectedIndex = listBox.SelectedIndex;
 
-            // if choosen element and song not last
+            // If choosen element and song not last
             if (selectedIndex != -1 && selectedIndex < listBoxIndexCount)
             {
                 listBox.SelectedIndex++;
@@ -85,7 +96,7 @@ namespace MediaPlayer
             int listBoxIndexCount = listBox.Items.Count - 1;
             int selectedIndex = listBox.SelectedIndex;
 
-            // if choosen element and song not first
+            // If choosen element and song not first
             if (selectedIndex != -1 && selectedIndex <= listBoxIndexCount && selectedIndex != 0)
             {
                 listBox.SelectedIndex--;
@@ -97,7 +108,7 @@ namespace MediaPlayer
         {
             int listBoxIndexCount = listBox.Items.Count - 1;
 
-            // if listBox have at least one element
+            // If listBox have at least one element
             if (listBoxIndexCount != -1)
             {
                 listBox.SelectedIndex = new Random().Next(0, listBoxIndexCount);
@@ -116,9 +127,13 @@ namespace MediaPlayer
         }
         private void PlaySelectedItem()
         {
+            SelectedIndex = listBox.SelectedIndex;
+
             FileInfo fi = listBox.SelectedItem as FileInfo;
             mediaEl.Source = new Uri(fi.FullName, UriKind.Relative);
             mediaEl.Play();
+
+            mediaEl.IsEnabled = false;
         }
     }
 }
