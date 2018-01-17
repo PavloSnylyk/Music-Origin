@@ -25,13 +25,23 @@
             <RowDefinition Height="48*"/>
 
         </Grid.RowDefinitions>
+        <Grid.Resources>
+            <Style x:Key ="buttonPlayPressed" TargetType="{x:Type Button}">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding Path=IsPlaying}" Value="true">
+                        <Setter Property="Background" Value="Red"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </Grid.Resources>
+
         <MediaElement Name="mediaEl" LoadedBehavior="Manual" MediaOpened="mediaEl_MediaOpened"/>
         <Slider x:Name="sliderMusic" FontStyle="Oblique"  HorizontalAlignment="Left" Margin="10,5,0,0" Grid.Row="2" VerticalAlignment="Top" RenderTransformOrigin="-0.833,2.5" Height="20" Width="497" Grid.ColumnSpan="2" PreviewMouseLeftButtonUp="sliderMusic_PreviewMouseLeftButtonUp"/>
         <ListBox x:Name="listBox" MouseDoubleClick="MusicListBox" HorizontalAlignment="Left" Background="Silver" Height="197" Margin="10,8,0,0" Grid.Row="1" VerticalAlignment="Top" Width="236"/>
         <Image x:Name="imageBox" Grid.Column="1" HorizontalAlignment="Left" Height="194" Margin="10,10,0,0" Grid.Row="1" VerticalAlignment="Top" Width="229"/>
         <Button x:Name="addMusicButton" Background="Silver" Click="AddMusicButton"  Content="Add music to playlist" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="123" Height="20"/>
-        <Button x:Name="playButton" Background="Silver" Click="PlayButton" HorizontalAlignment="Left" Margin="216,5,0,0" Grid.Row="3" VerticalAlignment="Top" Width="50" Height="30" Grid.ColumnSpan="2">
-            <Image x:Name="image" Source="Resources/Play.png" Height="23" Width="38"/>
+        <Button x:Name="playButton" Style="{DynamicResource buttonPlayPressed}" Background="Silver" Click="PlayButton" HorizontalAlignment="Left" Margin="216,5,0,0" Grid.Row="3" VerticalAlignment="Top" Width="50" Height="30" Grid.ColumnSpan="2">
+            <!--<Image x:Name="Image" Source="resources/play.png" Height="23" Width="38"/>-->
         </Button>
         <Button x:Name="nextSongButton" Background="Silver" Click="NextSongButton" HorizontalAlignment="Left" Margin="15,5,0,0" Grid.Row="3" VerticalAlignment="Top" Width="50" Height="30" Grid.Column="1">
             <Image x:Name="image2" Source="Resources/nextSong.png" Height="23" Width="38"/>

@@ -23,14 +23,16 @@ namespace MediaPlayer
     /// </summary>
     public partial class MainWindow : Window
     {
+
         public MainWindow()
         {
             InitializeComponent();
         }
-        
+
+
         MediaState mediastate = MediaState.Stop;
         DispatcherTimer timer = new DispatcherTimer();
-        
+
         public int SelectedIndex { get; set; }
         private void AddMusicButton(object sender, RoutedEventArgs e)
         {
@@ -138,6 +140,7 @@ namespace MediaPlayer
 
             FileInfo fi = listBox.SelectedItem as FileInfo;
             mediaEl.Source = new Uri(fi.FullName, UriKind.Relative);
+    //        IsPlaying = true;
             mediaEl.Play();
             mediastate = MediaState.Play;
             timer.Start();
@@ -161,5 +164,8 @@ namespace MediaPlayer
             mediaEl.Position = TimeSpan.FromSeconds(sliderMusic.Value);
             mediaEl.Play();
         }
+
+        public bool IsPlaying { get { return true; } }
+
     }
 }
