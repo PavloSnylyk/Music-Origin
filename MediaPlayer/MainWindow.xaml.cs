@@ -49,7 +49,7 @@ namespace MediaPlayer
 
         private void playButton_Click(object sender, RoutedEventArgs e)
         {
-            if (mediaEl.Source == null)
+            if (mediaEl.Source == null && listBox.SelectedIndex != -1)
             {
                 FileInfo fi = listBox.SelectedItem as FileInfo;
                 mediaEl.Source = new Uri(fi.FullName, UriKind.Relative);
