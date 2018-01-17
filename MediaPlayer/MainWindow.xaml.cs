@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Forms;
 using System.IO;
+using System.Windows.Threading;
 
 namespace MediaPlayer
 {
@@ -26,7 +27,10 @@ namespace MediaPlayer
         {
             InitializeComponent();
         }
-
+        
+        MediaState mediastate = MediaState.Stop;
+        DispatcherTimer timer = new DispatcherTimer();
+        
         public int SelectedIndex { get; set; }
         private void AddMusicButton(object sender, RoutedEventArgs e)
         {
@@ -129,11 +133,33 @@ namespace MediaPlayer
         {
             SelectedIndex = listBox.SelectedIndex;
 
+            timer.Interval = new TimeSpan(0, 0, 1);
+            timer.Tick += timer_Tick;
+
             FileInfo fi = listBox.SelectedItem as FileInfo;
             mediaEl.Source = new Uri(fi.FullName, UriKind.Relative);
             mediaEl.Play();
-
+            mediastate = MediaState.Play;
+            timer.Start();
             mediaEl.IsEnabled = false;
+        }
+
+        private void timer_Tick(object sender, EventArgs e)
+        {
+            if (mediastate == MediaState.Play)
+                sliderMusic.Value = mediaEl.Position.TotalSeconds;
+        }
+
+        private void mediaEl_MediaOpened(object sender, RoutedEventArgs e)
+        {
+            sliderMusic.Maximum = mediaEl.NaturalDuration.TimeSpan.TotalSeconds;
+        }
+
+        private void sliderMusic_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            mediaEl.Pause();
+            mediaEl.Position = TimeSpan.FromSeconds(sliderMusic.Value);
+            mediaEl.Play();
         }
     }
 }
