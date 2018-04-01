@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace MediaPlayer.Properties
+namespace MusicOrigin.Properties
 {
 
 

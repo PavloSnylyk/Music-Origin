@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2015
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaPlayer", "MediaPlayer\MediaPlayer.csproj", "{6DE76D1D-9E5B-422B-BB1D-E18410220C5F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MusicOrigin", "MediaPlayer\MusicOrigin.csproj", "{6DE76D1D-9E5B-422B-BB1D-E18410220C5F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,5 +18,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FEC73463-AA83-48D3-B535-E186FF3F2017}
 	EndGlobalSection
 EndGlobal

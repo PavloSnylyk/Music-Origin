@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace MediaPlayer.ViewModel
+namespace MusicOrigin.ViewModel
 {
     public class RelayCommand : ICommand
     {
@@ -13,11 +13,13 @@ namespace MediaPlayer.ViewModel
             add { CommandManager.RequerySuggested += value; }
             remove { CommandManager.RequerySuggested -= value; }
         }
+
         public RelayCommand(Action<object> execute, Func<object, bool> canExecute = null)
         {
             this.execute = execute;
             this.canExecute = canExecute;
         }
+
         public bool CanExecute(object parameter)
         {
             return this.canExecute == null || this.canExecute(parameter);

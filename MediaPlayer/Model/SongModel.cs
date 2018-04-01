@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using System;
 
-namespace MediaPlayer.Model
+namespace MusicOrigin.Model
 {
     public class SongModel : INotifyPropertyChanged
     {

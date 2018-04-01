@@ -1,8 +1,8 @@
-﻿using MediaPlayer.Interfaces;
+﻿using MusicOrigin.Interfaces;
 using System.Windows.Forms;
 
 
-namespace MediaPlayer.Services
+namespace MusicOrigin.Services
 {
     public class DialogService : IDialogService
     {

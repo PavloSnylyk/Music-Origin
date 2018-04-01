@@ -15,10 +15,10 @@ using System.Windows.Shapes;
 using System.Windows.Forms;
 using System.IO;
 using System.Windows.Threading;
-using MediaPlayer.ViewModel;
-using MediaPlayer.Services;
+using MusicOrigin.ViewModel;
+using MusicOrigin.Services;
 
-namespace MediaPlayer.View
+namespace MusicOrigin.View
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

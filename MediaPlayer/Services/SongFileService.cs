@@ -1,10 +1,10 @@
-﻿using MediaPlayer.Interfaces;
-using MediaPlayer.Model;
+﻿using MusicOrigin.Interfaces;
+using MusicOrigin.Model;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace MediaPlayer.Services
+namespace MusicOrigin.Services
 {
     public class SongFileService : IFileService
     {
