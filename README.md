@@ -1,2 +1,2 @@
 # Music-Origin
-Music-Origin is a music player with using Windows Presentation Foundation (WPF)
+Music-Origin is a music player with using Windows Presentation Foundation (WPF) where using patern MVVM
