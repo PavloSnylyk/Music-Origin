@@ -6,8 +6,8 @@ using MusicOrigin.Model;
 using MusicOrigin.Interfaces;
 using System.Windows.Media;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
+using System.Timers;
+using System.Windows.Threading;
 
 namespace MusicOrigin.ViewModel
 {
@@ -16,10 +16,100 @@ namespace MusicOrigin.ViewModel
         IFileService fileService;
         IDialogService dialogService;
         MediaPlayer player;
+        private RelayCommand openCommand;
+        private RelayCommand playCommand;
+        private RelayCommand playResumePauseCommand;
+        private RelayCommand previousSongCommand;
+        private RelayCommand nextSongCommand;
+        private SongModel selectedSong;
+        private double volumeValue = 50;
+        private double songPosition = 0;
+        private double duration = 1;
+        private bool isPause = true;
+        public event PropertyChangedEventHandler PropertyChanged;
         public ObservableCollection<SongModel> Songs { get; set; }
 
+        public MusicOriginViewModel(IDialogService dialogService, IFileService fileService)
+        {
+            this.dialogService = dialogService;
+            this.fileService = fileService;
+            Songs = new ObservableCollection<SongModel>();
+            player = new MediaPlayer();
+
+            {
+                var songs = fileService.Open("C:\\Users\\User\\Music");
+                Songs.Clear();
+                foreach (var song in songs)
+                    Songs.Add(song);
+            }
+        }
+        // Play Resume Pause song
+        public RelayCommand PlayResumePauseCommand
+        {
+            get
+            {
+                return playResumePauseCommand ?? (playResumePauseCommand = new RelayCommand(obj =>
+                {
+                    try
+                    {
+                        if (player != null)
+                        {
+                            if (player.Position.Milliseconds == 0 || SelectedSong.Path != player.Source.LocalPath)
+                            {
+                                this.PlayCommand.Execute(this);
+                            }
+                            else
+                            {
+                                if (IsPause == false)
+                                {
+                                    player.Pause();
+                                    IsPause = true;
+                                }
+                                else
+                                {
+                                    player.Play();
+                                    IsPause = false;
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        dialogService.ShowMessage(ex.Message);
+                    }
+                }));
+            }
+        }
+        //  Play song
+        public RelayCommand PlayCommand
+        {
+            get
+            {
+                return playCommand ?? (playCommand = new RelayCommand(obj =>
+                {
+                    try
+                    {
+                        player.Close();
+
+                        player.Open(new Uri(SelectedSong.Path));
+                        player.Volume = VolumeValue / 100;
+                        while (!player.NaturalDuration.HasTimeSpan)
+                        {
+                            Thread.Sleep(700);
+                        }
+                        Duration = player.NaturalDuration.TimeSpan.TotalSeconds;
+                        SongPosition = 0;
+                        player.Play();
+                        IsPause = false;
+                    }
+                    catch (Exception ex)
+                    {
+                        dialogService.ShowMessage(ex.Message);
+                    }
+                }));
+            }
+        }
         // Open File Dialog
-        private RelayCommand openCommand;
         public RelayCommand OpenCommand
         {
             get
@@ -40,40 +130,11 @@ namespace MusicOrigin.ViewModel
                       {
                           dialogService.ShowMessage(ex.Message);
                       }
-                  }));
+                 }));
             }
         }
-        // Play song
-        private RelayCommand playCommand;
-        public RelayCommand PlayCommand
-        {
-            get
-            {
-                return playCommand ?? (playCommand = new RelayCommand(obj =>
-                {
-                    try
-                    {
-                        if (player != null)
-                            player.Close();
 
-                        player.Open(new Uri(SelectedSong.Path));
-                        player.Volume = VolumeValue / 100;
-                        while (!player.NaturalDuration.HasTimeSpan)
-                        {
-                            Thread.Sleep(700);
-                        }
-                        Duration = player.NaturalDuration.TimeSpan.TotalSeconds; ;
-                        player.Play();
-                    }
-                    catch (Exception ex)
-                    {
-                        dialogService.ShowMessage(ex.Message);
-                    }
-                }));
-            }
-        }
         // Play next song
-        private RelayCommand nextSongCommand;
         public RelayCommand NextSongCommand
         {
             get
@@ -105,7 +166,6 @@ namespace MusicOrigin.ViewModel
             }
         }
         // Play previous song
-        private RelayCommand previousSongCommand;
         public RelayCommand PreviousSongCommand
         {
             get
@@ -137,7 +197,6 @@ namespace MusicOrigin.ViewModel
             }
         }
         // Return current song
-        private SongModel selectedSong;
         public SongModel SelectedSong
         {
             get { return selectedSong; }
@@ -148,7 +207,6 @@ namespace MusicOrigin.ViewModel
             }
         }
         // Return song volume value
-        private double volumeValue = 50;
         public double VolumeValue
         {
             get { return volumeValue; }
@@ -159,20 +217,8 @@ namespace MusicOrigin.ViewModel
                 player.Volume = value / 100;
             }
         }
-        // Current song position
-        private double songPosition;
-        public double SongPosition
-        {
-            get { return player.Position.TotalSeconds; }
-            set
-            {
-                songPosition = value;
-                player.Position = TimeSpan.FromSeconds(songPosition);
-                OnPropertyChanged("SongPosition");
-            }
-        }
+
         // Length of song in seconds
-        private double duration = 1;
         public double Duration
         {
             get { return duration; }
@@ -182,16 +228,27 @@ namespace MusicOrigin.ViewModel
                 OnPropertyChanged("Duration");
             }
         }
-
-        public MusicOriginViewModel(IDialogService dialogService, IFileService fileService)
+        public bool IsPause
         {
-            this.dialogService = dialogService;
-            this.fileService = fileService;
-            Songs = new ObservableCollection<SongModel>();
-            player = new MediaPlayer();
+            get { return isPause; }
+            set
+            {
+                isPause = value;
+                OnPropertyChanged("IsPause");
+            }
         }
+        // Current song position
+        public double SongPosition
+        {
+            get { return player.Position.TotalSeconds; }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+            set
+            {
+                songPosition = value;
+                player.Position = TimeSpan.FromSeconds(songPosition);
+                OnPropertyChanged("SongPosition");
+            }
+        }
         public void OnPropertyChanged([CallerMemberName]string prop = "")
         {
             if (PropertyChanged != null)

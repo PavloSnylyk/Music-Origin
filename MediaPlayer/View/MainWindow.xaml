@@ -13,6 +13,20 @@
     <Window.Background>
         <ImageBrush ImageSource="../Resources/background.png"/>
     </Window.Background>
+
+    <Window.Resources>
+        <Style x:Key="image">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsPause}" Value="True">
+                    <Setter Property="Image.Source" Value="../Resources/Play.png" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsPause}" Value="False">
+                    <Setter Property="Image.Source" Value="../Resources/pause.png" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="258*"/>
@@ -26,7 +40,7 @@
             <RowDefinition Height="48*"/>
 
         </Grid.RowDefinitions>
-        <Slider x:Name="MusicPositionSlider" FontStyle="Oblique" IsSnapToTickEnabled="True" IsMoveToPointEnabled="True" Minimum="0" Maximum="{Binding Duration}"  Value="{Binding SongPosition, Delay=500,Mode=TwoWay}" HorizontalAlignment="Left" Margin="10,5,0,0" Grid.Row="2" VerticalAlignment="Top" RenderTransformOrigin="-0.833,2.5" Height="20" Width="497" Grid.ColumnSpan="2"/>
+        <Slider x:Name="MusicPositionSlider" FontStyle="Oblique" IsSnapToTickEnabled="True" IsMoveToPointEnabled="True" Minimum="0" Maximum="{Binding Duration}"  Value="{Binding SongPosition, Delay=500,Mode=TwoWay}" HorizontalAlignment="Left" Margin="10,5,0,0" Grid.Row="2" VerticalAlignment="Top" RenderTransformOrigin="-0.833,2.5" Height="20" Width="497" Grid.ColumnSpan="2" SmallChange="1" LargeChange="1"/>
         <ListBox ItemsSource="{Binding Songs}"  SelectedItem="{Binding SelectedSong}" HorizontalAlignment="Left" Background="Silver" Height="197" Margin="10,8,0,0" Grid.Row="1" VerticalAlignment="Top" Width="236">
             <ListBox.ItemTemplate>
                 <DataTemplate>
@@ -37,10 +51,11 @@
             </ListBox.ItemTemplate>
         </ListBox>
         
-            <!--<Image x:Name="imageBox" Grid.Column="1" HorizontalAlignment="Left" Height="194" Margin="10,10,0,0" Grid.Row="1" VerticalAlignment="Top" Width="229"/>-->
-        <Button x:Name="AddSongButton" Command="{Binding OpenCommand}" Background="Silver"  Content="Add music to playlist" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="123" Height="20"/>
-        <Button x:Name="PlayButton" Command="{Binding PlayCommand}"  Background="Silver" HorizontalAlignment="Left" Margin="216,5,0,0" Grid.Row="3" VerticalAlignment="Top" Width="50" Height="30" Grid.ColumnSpan="2">
-            <Image x:Name="PlayImage" Source="../Resources/Play.png" Height="23" Width="38"/>
+        <!--<Image x:Name="imageBox" Grid.Column="1" HorizontalAlignment="Left" Height="194" Margin="10,10,0,0" Grid.Row="1" VerticalAlignment="Top" Width="229"/>-->
+        <Button x:Name="AddSongButton" Command="{Binding OpenCommand}"  Background="Silver"  Content="Add music to playlist" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="123" Height="20"/>
+
+        <Button x:Name="PlayButton" Command="{Binding PlayResumePauseCommand}"  Background="Silver" HorizontalAlignment="Left" Margin="216,5,0,0" Grid.Row="3" VerticalAlignment="Top" Width="50" Height="30" Grid.ColumnSpan="2">
+            <Image x:Name="PlayImage" Style="{StaticResource ResourceKey=image}" Height="23" Width="38"/>
         </Button>
         <Button x:Name="NextSongButton" Command="{Binding NextSongCommand}" Background="Silver" HorizontalAlignment="Left" Margin="15,5,0,0" Grid.Row="3" VerticalAlignment="Top" Width="50" Height="30" Grid.Column="1">
             <Image x:Name="NextSongImage" Source="../Resources/nextSong.png" Height="23" Width="38"/>
