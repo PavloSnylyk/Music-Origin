@@ -25,7 +25,7 @@ namespace MusicOrigin.ViewModel
         private double volumeValue = 50;
         private double songPosition = 0;
         private double duration = 1;
-        private bool isPause;
+        private bool isPause = true;
         public event PropertyChangedEventHandler PropertyChanged;
         public ObservableCollection<SongModel> Songs { get; set; }
 
@@ -43,7 +43,7 @@ namespace MusicOrigin.ViewModel
                     Songs.Add(song);
             }
         }
-        // Play song
+        // Play Resume Pause song
         public RelayCommand PlayResumePauseCommand
         {
             get
@@ -54,13 +54,12 @@ namespace MusicOrigin.ViewModel
                     {
                         if (player != null)
                         {
-                            if (player.Position.Milliseconds == 0 || SelectedSong.Path != player.Source.AbsolutePath)
+                            if (player.Position.Milliseconds == 0 || SelectedSong.Path != player.Source.LocalPath)
                             {
                                 this.PlayCommand.Execute(this);
                             }
                             else
                             {
-
                                 if (IsPause == false)
                                 {
                                     player.Pause();
@@ -71,7 +70,6 @@ namespace MusicOrigin.ViewModel
                                     player.Play();
                                     IsPause = false;
                                 }
-
                             }
                         }
                     }
@@ -82,6 +80,7 @@ namespace MusicOrigin.ViewModel
                 }));
             }
         }
+        //  Play song
         public RelayCommand PlayCommand
         {
             get
@@ -102,8 +101,6 @@ namespace MusicOrigin.ViewModel
                         SongPosition = 0;
                         player.Play();
                         IsPause = false;
-
-
                     }
                     catch (Exception ex)
                     {
@@ -133,7 +130,7 @@ namespace MusicOrigin.ViewModel
                       {
                           dialogService.ShowMessage(ex.Message);
                       }
-                  }));
+                 }));
             }
         }
 
