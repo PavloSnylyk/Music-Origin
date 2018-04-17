@@ -54,22 +54,25 @@ namespace MusicOrigin.ViewModel
                     {
                         if (player != null)
                         {
-                            if (player.Position.Milliseconds == 0)
+                            if (player.Position.Milliseconds == 0 || SelectedSong.Path != player.Source.AbsolutePath)
                             {
                                 this.PlayCommand.Execute(this);
                             }
-
-                            if (IsPause == false)
-                            {
-                                player.Pause();
-                                IsPause = true;
-                            }
                             else
                             {
-                                player.Play();
-                                IsPause = false;
-                            }
 
+                                if (IsPause == false)
+                                {
+                                    player.Pause();
+                                    IsPause = true;
+                                }
+                                else
+                                {
+                                    player.Play();
+                                    IsPause = false;
+                                }
+
+                            }
                         }
                     }
                     catch (Exception ex)
