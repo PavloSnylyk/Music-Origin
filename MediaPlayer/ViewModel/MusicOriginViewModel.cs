@@ -8,6 +8,7 @@ using System.Windows.Media;
 using System.Threading;
 using System.Timers;
 using System.Windows.Threading;
+using System.Windows;
 
 namespace MusicOrigin.ViewModel
 {
@@ -26,6 +27,7 @@ namespace MusicOrigin.ViewModel
         private double songPosition = 0;
         private double duration = 1;
         private bool isPause = true;
+        private System.Timers.Timer moveSliderTimer;
         public event PropertyChangedEventHandler PropertyChanged;
         public ObservableCollection<SongModel> Songs { get; set; }
 
@@ -36,6 +38,7 @@ namespace MusicOrigin.ViewModel
             Songs = new ObservableCollection<SongModel>();
             player = new MediaPlayer();
 
+            // Temporarily,delete in last version
             {
                 var songs = fileService.Open("C:\\Users\\User\\Music");
                 Songs.Clear();
@@ -100,6 +103,7 @@ namespace MusicOrigin.ViewModel
                         Duration = player.NaturalDuration.TimeSpan.TotalSeconds;
                         SongPosition = 0;
                         player.Play();
+                        SwitchOnAutoMoveSlider();
                         IsPause = false;
                     }
                     catch (Exception ex)
@@ -130,7 +134,7 @@ namespace MusicOrigin.ViewModel
                       {
                           dialogService.ShowMessage(ex.Message);
                       }
-                 }));
+                  }));
             }
         }
 
@@ -240,14 +244,33 @@ namespace MusicOrigin.ViewModel
         // Current song position
         public double SongPosition
         {
-            get { return player.Position.TotalSeconds; }
-
+            get
+            {
+                return player.Position.TotalSeconds;
+            }
             set
             {
                 songPosition = value;
                 player.Position = TimeSpan.FromSeconds(songPosition);
                 OnPropertyChanged("SongPosition");
             }
+        }
+        // Settings for timer and start OnTimedEvent for refreshing song position on slider
+        private void SwitchOnAutoMoveSlider()
+        {
+            moveSliderTimer = new System.Timers.Timer();
+            moveSliderTimer.Interval = 300;
+            moveSliderTimer.Elapsed += OnTimedEvent;
+            moveSliderTimer.AutoReset = true;
+            moveSliderTimer.Enabled = true;
+        }
+        // Refreshing SongPosition
+        private void OnTimedEvent(object source, ElapsedEventArgs e)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                SongPosition = player.Position.TotalSeconds;
+            });
         }
         public void OnPropertyChanged([CallerMemberName]string prop = "")
         {
