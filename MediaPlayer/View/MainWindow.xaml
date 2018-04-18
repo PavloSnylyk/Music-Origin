@@ -40,7 +40,7 @@
             <RowDefinition Height="48*"/>
 
         </Grid.RowDefinitions>
-        <Slider x:Name="MusicPositionSlider" FontStyle="Oblique" IsSnapToTickEnabled="True" IsMoveToPointEnabled="True" Minimum="0" Maximum="{Binding Duration}"  Value="{Binding SongPosition, Delay=500,Mode=TwoWay}" HorizontalAlignment="Left" Margin="10,5,0,0" Grid.Row="2" VerticalAlignment="Top" RenderTransformOrigin="-0.833,2.5" Height="20" Width="497" Grid.ColumnSpan="2" SmallChange="1" LargeChange="1"/>
+        <Slider x:Name="MusicPositionSlider" FontStyle="Oblique" IsSnapToTickEnabled="True" IsMoveToPointEnabled="True" Minimum="0" Maximum="{Binding Duration}"  Value="{Binding SongPosition,Mode=TwoWay}" HorizontalAlignment="Left" Margin="10,5,0,0" Grid.Row="2" VerticalAlignment="Top" RenderTransformOrigin="-0.833,2.5" Height="20" Width="497" Grid.ColumnSpan="2" SmallChange="1" LargeChange="1"/>
         <ListBox ItemsSource="{Binding Songs}"  SelectedItem="{Binding SelectedSong}" HorizontalAlignment="Left" Background="Silver" Height="197" Margin="10,8,0,0" Grid.Row="1" VerticalAlignment="Top" Width="236">
             <ListBox.ItemTemplate>
                 <DataTemplate>
