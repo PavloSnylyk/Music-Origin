@@ -4,10 +4,8 @@ using System.Runtime.CompilerServices;
 using System.Collections.ObjectModel;
 using MusicOrigin.Model;
 using MusicOrigin.Interfaces;
-using System.Windows.Media;
 using System.Threading;
 using System.Timers;
-using System.Windows.Threading;
 using System.Windows;
 
 namespace MusicOrigin.ViewModel
@@ -16,7 +14,7 @@ namespace MusicOrigin.ViewModel
     {
         IFileService fileService;
         IDialogService dialogService;
-        MediaPlayer player;
+        System.Windows.Media.MediaPlayer player;
         private RelayCommand openCommand;
         private RelayCommand playCommand;
         private RelayCommand playResumePauseCommand;
@@ -36,7 +34,7 @@ namespace MusicOrigin.ViewModel
             this.dialogService = dialogService;
             this.fileService = fileService;
             Songs = new ObservableCollection<SongModel>();
-            player = new MediaPlayer();
+            player = new System.Windows.Media.MediaPlayer();
 
             // Temporarily,delete in last version
             {
@@ -232,6 +230,7 @@ namespace MusicOrigin.ViewModel
                 OnPropertyChanged("Duration");
             }
         }
+        // Playing song or not
         public bool IsPause
         {
             get { return isPause; }

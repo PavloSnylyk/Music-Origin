@@ -10,5 +10,7 @@ namespace MusicOrigin.Interfaces
     public interface IFileService
     {
         IList<SongModel> Open(string filename);
+        void SaveLastSongAndPosition(string songPath, double position);
+
     }
 }
