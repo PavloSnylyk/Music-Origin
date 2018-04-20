@@ -7,6 +7,9 @@ using MusicOrigin.Interfaces;
 using System.Threading;
 using System.Timers;
 using System.Windows;
+using System.Collections;
+using System.Collections.Generic;
+using MediaPlayer.Model;
 
 namespace MusicOrigin.ViewModel
 {
@@ -35,13 +38,9 @@ namespace MusicOrigin.ViewModel
             this.fileService = fileService;
             Songs = new ObservableCollection<SongModel>();
             player = new System.Windows.Media.MediaPlayer();
-
-            // Temporarily,delete in last version
+            if (fileService.LoadLastSongAndPosition() != null)
             {
-                var songs = fileService.Open("C:\\Users\\User\\Music");
-                Songs.Clear();
-                foreach (var song in songs)
-                    Songs.Add(song);
+                FillSongList(fileService.LoadLastSongAndPosition().Folderpath);
             }
         }
         // Play Resume Pause song
@@ -111,6 +110,17 @@ namespace MusicOrigin.ViewModel
                 }));
             }
         }
+        // Add list of songs in collection that fill list in view
+        private void FillSongList(string path)
+        {
+            var songs = fileService.Open(path);
+            Songs.Clear();
+            foreach (var song in songs)
+            {
+                Songs.Add(song);
+            }
+        }
+
         // Open File Dialog
         public RelayCommand OpenCommand
         {
@@ -122,10 +132,7 @@ namespace MusicOrigin.ViewModel
                       {
                           if (dialogService.OpenFileDialog() == true)
                           {
-                              var songs = fileService.Open(dialogService.FilePath);
-                              Songs.Clear();
-                              foreach (var song in songs)
-                                  Songs.Add(song);
+                              FillSongList(dialogService.FilePath);
                           }
                       }
                       catch (Exception ex)
@@ -266,10 +273,32 @@ namespace MusicOrigin.ViewModel
         // Refreshing SongPosition
         private void OnTimedEvent(object source, ElapsedEventArgs e)
         {
-            Application.Current.Dispatcher.Invoke(() =>
+            try
             {
-                SongPosition = player.Position.TotalSeconds;
-            });
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    SongPosition = player.Position.TotalSeconds;
+                });
+            }
+            catch (NullReferenceException)
+            {
+
+            }
+        }
+        // Save song position before close application
+        public void OnWindowClosing(object sender, CancelEventArgs e)
+        {
+            var playerXmlSaveModel = new PlayerXmlSaveModel
+            {
+                Folderpath = dialogService.FilePath,
+                SongName = SelectedSong == null ? "" : SelectedSong.Title,
+                SongPosition = SongPosition
+            };
+
+            if (playerXmlSaveModel.Folderpath != null)
+            {
+            fileService.SaveLastSongAndPosition(playerXmlSaveModel);
+            }
         }
         public void OnPropertyChanged([CallerMemberName]string prop = "")
         {

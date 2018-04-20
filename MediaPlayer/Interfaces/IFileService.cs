@@ -1,4 +1,5 @@
-﻿using MusicOrigin.Model;
+﻿using MediaPlayer.Model;
+using MusicOrigin.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,8 @@ namespace MusicOrigin.Interfaces
     public interface IFileService
     {
         IList<SongModel> Open(string filename);
-        void SaveLastSongAndPosition(string songPath, double position);
+        void SaveLastSongAndPosition(PlayerXmlSaveModel playerXmlSaveModel);
+        PlayerXmlSaveModel LoadLastSongAndPosition();
 
     }
 }

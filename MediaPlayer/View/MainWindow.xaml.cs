@@ -10,11 +10,6 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Windows.Forms;
-using System.IO;
-using System.Windows.Threading;
 using MusicOrigin.ViewModel;
 using MusicOrigin.Services;
 
@@ -28,7 +23,9 @@ namespace MusicOrigin.View
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = new MusicOriginViewModel(new DialogService(),new SongFileService());
+            MusicOriginViewModel viewModel = new MusicOriginViewModel(new DialogService(), new SongFileService());
+            DataContext = viewModel;
+            Closing += viewModel.OnWindowClosing;
         }
     }
 }
