@@ -8,7 +8,7 @@ namespace MediaPlayer.Model
 {
     public class PlayerXmlSaveModel
     {
-        public string Folderpath { get; set; }
+        public string FolderPath { get; set; }
         public string SongName { get; set; }
         public double SongPosition { get; set; }
     }

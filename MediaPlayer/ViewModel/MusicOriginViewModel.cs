@@ -40,7 +40,22 @@ namespace MusicOrigin.ViewModel
             player = new System.Windows.Media.MediaPlayer();
             if (fileService.LoadLastSongAndPosition() != null)
             {
-                FillSongList(fileService.LoadLastSongAndPosition().Folderpath);
+                var playerXmlSaveModel = fileService.LoadLastSongAndPosition();
+                FillSongList(playerXmlSaveModel.FolderPath);
+                foreach (var item in Songs)
+                {
+                    if (item.Path == playerXmlSaveModel.FolderPath + "\\" + playerXmlSaveModel.SongName)
+                    {
+                        SelectedSong = item;
+                        break;
+                    }
+                }
+                player.Open(new Uri(SelectedSong.Path));
+                Thread.Sleep(1000);
+                player.Position = TimeSpan.FromSeconds(playerXmlSaveModel.SongPosition);
+                SongPosition = player.Position.TotalSeconds;
+                Duration = player.NaturalDuration.TimeSpan.TotalSeconds;
+                SwitchOnAutoMoveSlider();
             }
         }
         // Play Resume Pause song
@@ -68,6 +83,9 @@ namespace MusicOrigin.ViewModel
                                 else
                                 {
                                     player.Play();
+                                    Duration = player.NaturalDuration.TimeSpan.TotalSeconds;
+                                    SongPosition = player.Position.TotalSeconds;
+                                    SwitchOnAutoMoveSlider();
                                     IsPause = false;
                                 }
                             }
@@ -154,7 +172,7 @@ namespace MusicOrigin.ViewModel
                     {
                         for (int i = 0; i < Songs.Count; i++)
                         {
-                            if (Songs[i].Equals(SelectedSong))
+                            if (Songs[i].Path.Equals(SelectedSong.Path))
                             {
                                 if (i == Songs.Count - 1)
                                 {
@@ -290,14 +308,21 @@ namespace MusicOrigin.ViewModel
         {
             var playerXmlSaveModel = new PlayerXmlSaveModel
             {
-                Folderpath = dialogService.FilePath,
+                FolderPath = dialogService.FilePath,
                 SongName = SelectedSong == null ? "" : SelectedSong.Title,
                 SongPosition = SongPosition
             };
 
-            if (playerXmlSaveModel.Folderpath != null)
+            if (playerXmlSaveModel.FolderPath != null)
             {
-            fileService.SaveLastSongAndPosition(playerXmlSaveModel);
+                fileService.SaveLastSongAndPosition(playerXmlSaveModel);
+            }
+            else if (SelectedSong != null)
+            {
+                playerXmlSaveModel.FolderPath = fileService.LoadLastSongAndPosition().FolderPath;
+
+                fileService.SaveLastSongAndPosition(playerXmlSaveModel);
+
             }
         }
         public void OnPropertyChanged([CallerMemberName]string prop = "")
