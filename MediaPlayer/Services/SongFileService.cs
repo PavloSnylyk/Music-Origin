@@ -43,7 +43,7 @@ namespace MusicOrigin.Services
                 xDocument = XDocument.Load(xmlFilePath);
                 XElement root = xDocument.Element("Player").Element("Song");
 
-                root.Element("FolderPath").Value = playerXmlSaveModel.Folderpath;
+                root.Element("FolderPath").Value = playerXmlSaveModel.FolderPath;
                 root.Element("SongName").Value = playerXmlSaveModel.SongName;
                 root.Element("SongPosition").Value = playerXmlSaveModel.SongPosition.ToString();
 
@@ -52,7 +52,7 @@ namespace MusicOrigin.Services
             {
                 xDocument = new XDocument(new XElement("Player",
                    new XElement("Song",
-                   new XElement("FolderPath", playerXmlSaveModel.Folderpath),
+                   new XElement("FolderPath", playerXmlSaveModel.FolderPath),
                    new XElement("SongName", playerXmlSaveModel.SongName),
                    new XElement("SongPosition", playerXmlSaveModel.SongPosition)
                    )));
@@ -73,7 +73,7 @@ namespace MusicOrigin.Services
                     PlayerXmlSaveModel playerXmlSaveModel = new PlayerXmlSaveModel
                     {
                         SongName = root.Element("SongName").Value,
-                        Folderpath = root.Element("FolderPath").Value,
+                        FolderPath = root.Element("FolderPath").Value,
                         SongPosition = double.Parse(root.Element("SongPosition").Value)
                     };
                     return playerXmlSaveModel;
