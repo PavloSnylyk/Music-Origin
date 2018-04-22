@@ -10,6 +10,7 @@ using System.Windows;
 using System.Collections;
 using System.Collections.Generic;
 using MediaPlayer.Model;
+using System.Linq;
 
 namespace MusicOrigin.ViewModel
 {
@@ -23,14 +24,19 @@ namespace MusicOrigin.ViewModel
         private RelayCommand playResumePauseCommand;
         private RelayCommand previousSongCommand;
         private RelayCommand nextSongCommand;
+        private RelayCommand shuffleSongsCommand;
         private SongModel selectedSong;
         private double volumeValue = 50;
         private double songPosition = 0;
         private double duration = 1;
         private bool isPause = true;
+        private bool isShuffle;
         private System.Timers.Timer moveSliderTimer;
         public event PropertyChangedEventHandler PropertyChanged;
         public ObservableCollection<SongModel> Songs { get; set; }
+        private List<int> shuffleIndexSongList;
+
+
 
         public MusicOriginViewModel(IDialogService dialogService, IFileService fileService)
         {
@@ -55,6 +61,7 @@ namespace MusicOrigin.ViewModel
                 player.Position = TimeSpan.FromSeconds(playerXmlSaveModel.SongPosition);
                 SongPosition = player.Position.TotalSeconds;
                 Duration = player.NaturalDuration.TimeSpan.TotalSeconds;
+                shuffleIndexSongList = new List<int>();
                 SwitchOnAutoMoveSlider();
             }
         }
@@ -170,20 +177,40 @@ namespace MusicOrigin.ViewModel
                 {
                     try
                     {
-                        for (int i = 0; i < Songs.Count; i++)
+                        if (IsShuffle)
                         {
-                            if (Songs[i].Path.Equals(SelectedSong.Path))
+                            for (int i = 0; i < Songs.Count; i++)
                             {
-                                if (i == Songs.Count - 1)
+                                
+                                if (Songs[shuffleIndexSongList[i]].Path.Equals(SelectedSong.Path))
                                 {
-                                    SelectedSong = Songs[0];
+                                    if (i == Songs.Count - 1)
+                                    {
+                                        SelectedSong = Songs[shuffleIndexSongList[0]];
+                                        break;
+                                    }
+                                    SelectedSong = Songs[shuffleIndexSongList[i + 1]];
                                     break;
                                 }
-                                SelectedSong = Songs[i + 1];
-                                break;
                             }
                         }
-                        this.PlayCommand.Execute(this);
+                        else
+                        {
+                            for (int i = 0; i < Songs.Count; i++)
+                            {
+                                if (Songs[i].Path.Equals(SelectedSong.Path))
+                                {
+                                    if (i == Songs.Count - 1)
+                                    {
+                                        SelectedSong = Songs[0];
+                                        break;
+                                    }
+                                    SelectedSong = Songs[i + 1];
+                                    break;
+                                }
+                            }
+                        }
+                            this.PlayCommand.Execute(this);
                     }
                     catch (Exception ex)
                     {
@@ -201,20 +228,75 @@ namespace MusicOrigin.ViewModel
                 {
                     try
                     {
-                        for (int i = 0; i < Songs.Count; i++)
+                        if (IsShuffle)
                         {
-                            if (Songs[i].Equals(SelectedSong))
+                            for (int i = 0; i < Songs.Count; i++)
                             {
-                                if (i == 0)
+
+                                if (Songs[shuffleIndexSongList[i]].Path.Equals(SelectedSong.Path))
                                 {
-                                    SelectedSong = Songs[Songs.Count - 1];
+                                    if (i == 0)
+                                    {
+                                        SelectedSong = Songs[shuffleIndexSongList[Songs.Count - 1]];
+                                        break;
+                                    }
+                                    SelectedSong = Songs[shuffleIndexSongList[i - 1]];
                                     break;
                                 }
-                                SelectedSong = Songs[i - 1];
-                                break;
                             }
                         }
-                        this.PlayCommand.Execute(this);
+                        else
+                        {
+                            for (int i = 0; i < Songs.Count; i++)
+                            {
+                                if (Songs[i].Equals(SelectedSong))
+                                {
+                                    if (i == 0)
+                                    {
+                                        SelectedSong = Songs[Songs.Count - 1];
+                                        break;
+                                    }
+                                    SelectedSong = Songs[i - 1];
+                                    break;
+                                }
+                            }
+                        }
+                            this.PlayCommand.Execute(this);
+                    }
+                    catch (Exception ex)
+                    {
+                        dialogService.ShowMessage(ex.Message);
+                    }
+                }));
+            }
+        }
+        // Shuffle song or not
+        public bool IsShuffle
+        {
+            get { return isShuffle; }
+            set
+            {
+                isShuffle = value;
+                OnPropertyChanged("IsShuffle");
+            }
+        }
+        // Shuffle Songs
+        public RelayCommand ShuffleSongsCommand
+        {
+            get
+            {
+                return shuffleSongsCommand ?? (shuffleSongsCommand = new RelayCommand(obj =>
+                {
+                    try
+                    {
+                        IsShuffle = !IsShuffle;
+                        shuffleIndexSongList.Clear();
+
+                        for (int i = 0; i < Songs.Count; i++)
+                        {
+                            shuffleIndexSongList.Add(i);
+                        }
+                        shuffleIndexSongList = shuffleIndexSongList.OrderBy(a => Guid.NewGuid()).ToList();
                     }
                     catch (Exception ex)
                     {
@@ -269,9 +351,7 @@ namespace MusicOrigin.ViewModel
         public double SongPosition
         {
             get
-            {
-                return player.Position.TotalSeconds;
-            }
+            { return player.Position.TotalSeconds; }
             set
             {
                 songPosition = value;
@@ -312,7 +392,6 @@ namespace MusicOrigin.ViewModel
                 SongName = SelectedSong == null ? "" : SelectedSong.Title,
                 SongPosition = SongPosition
             };
-
             if (playerXmlSaveModel.FolderPath != null)
             {
                 fileService.SaveLastSongAndPosition(playerXmlSaveModel);
