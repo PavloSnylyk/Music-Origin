@@ -72,6 +72,14 @@
     <Compile Include="Interfaces\IFileService.cs" />
     <Compile Include="ViewModel\RelayCommand.cs" />
     <Compile Include="Services\SongFileService.cs" />
+    <Page Include="Resources\Localization\lang.uk-UK.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Localization\lang.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

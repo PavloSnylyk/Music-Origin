@@ -5,5 +5,8 @@
     <Setting Name="XmlPath" Type="System.String" Scope="User">
       <Value Profile="(Default)">../../Resources/ApplicationStatus/Player.xml</Value>
     </Setting>
+    <Setting Name="DefaultLanguage" Type="System.Globalization.CultureInfo" Scope="User">
+      <Value Profile="(Default)">en-US</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
