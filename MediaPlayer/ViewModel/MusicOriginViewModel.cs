@@ -45,37 +45,9 @@ namespace MusicOrigin.ViewModel
             this.fileService = fileService;
             Songs = new ObservableCollection<SongModel>();
             MenuItems = new ObservableCollection<MenuItem>();
-            App.LanguageChanged += LanguageChanged;
-            foreach (var lang in App.Languages)
-            {
-                MenuItem menuLang = new MenuItem();
-                menuLang.Header = lang.DisplayName;
-                menuLang.Tag = lang;
-                menuLang.IsChecked = lang.Equals(App.Language);
-                menuLang.Click += ChangeLanguageClick;
-                MenuItems.Add(menuLang);
-            }
             player = new System.Windows.Media.MediaPlayer();
-            if (fileService.LoadLastSongAndPosition() != null)
-            {
-                var playerXmlSaveModel = fileService.LoadLastSongAndPosition();
-                FillSongList(playerXmlSaveModel.FolderPath);
-                foreach (var item in Songs)
-                {
-                    if (item.Path == playerXmlSaveModel.FolderPath + "\\" + playerXmlSaveModel.SongName)
-                    {
-                        SelectedSong = item;
-                        break;
-                    }
-                }
-                player.Open(new Uri(SelectedSong.Path));
-                Thread.Sleep(1000);
-                player.Position = TimeSpan.FromSeconds(playerXmlSaveModel.SongPosition);
-                SongPosition = player.Position.TotalSeconds;
-                Duration = player.NaturalDuration.TimeSpan.TotalSeconds;
-                shuffleIndexSongList = new List<int>();
-                SwitchOnAutoMoveSlider();
-            }
+            InitializeLanguage();
+            InitializeXml(fileService);
         }
         // Play Resume Pause song
         public RelayCommand PlayResumePauseCommand
@@ -345,7 +317,44 @@ namespace MusicOrigin.ViewModel
                 player.Volume = value / 100;
             }
         }
-
+        // Initialize languae
+        private void InitializeLanguage()
+        {
+            App.LanguageChanged += LanguageChanged;
+            foreach (var lang in App.Languages)
+            {
+                MenuItem menuLang = new MenuItem();
+                menuLang.Header = lang.DisplayName;
+                menuLang.Tag = lang;
+                menuLang.IsChecked = lang.Equals(App.Language);
+                menuLang.Click += ChangeLanguageClick;
+                MenuItems.Add(menuLang);
+            }
+        }
+        // Initialize Xml
+        private void InitializeXml(IFileService fileService)
+        {
+            if (fileService.LoadLastSongAndPosition() != null)
+            {
+                var playerXmlSaveModel = fileService.LoadLastSongAndPosition();
+                FillSongList(playerXmlSaveModel.FolderPath);
+                foreach (var item in Songs)
+                {
+                    if (item.Path == playerXmlSaveModel.FolderPath + "\\" + playerXmlSaveModel.SongName)
+                    {
+                        SelectedSong = item;
+                        break;
+                    }
+                }
+                player.Open(new Uri(SelectedSong.Path));
+                Thread.Sleep(1000);
+                player.Position = TimeSpan.FromSeconds(playerXmlSaveModel.SongPosition);
+                SongPosition = player.Position.TotalSeconds;
+                Duration = player.NaturalDuration.TimeSpan.TotalSeconds;
+                shuffleIndexSongList = new List<int>();
+                SwitchOnAutoMoveSlider();
+            }
+        }
         // Length of song in seconds
         public double Duration
         {
