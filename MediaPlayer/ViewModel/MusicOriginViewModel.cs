@@ -11,6 +11,8 @@ using System.Collections;
 using System.Collections.Generic;
 using MediaPlayer.Model;
 using System.Linq;
+using System.Globalization;
+using System.Windows.Controls;
 
 namespace MusicOrigin.ViewModel
 {
@@ -34,15 +36,25 @@ namespace MusicOrigin.ViewModel
         private System.Timers.Timer moveSliderTimer;
         public event PropertyChangedEventHandler PropertyChanged;
         public ObservableCollection<SongModel> Songs { get; set; }
+        public ObservableCollection<MenuItem> MenuItems { get; set; }
         private List<int> shuffleIndexSongList;
-
-
 
         public MusicOriginViewModel(IDialogService dialogService, IFileService fileService)
         {
             this.dialogService = dialogService;
             this.fileService = fileService;
             Songs = new ObservableCollection<SongModel>();
+            MenuItems = new ObservableCollection<MenuItem>();
+            App.LanguageChanged += LanguageChanged;
+            foreach (var lang in App.Languages)
+            {
+                MenuItem menuLang = new MenuItem();
+                menuLang.Header = lang.DisplayName;
+                menuLang.Tag = lang;
+                menuLang.IsChecked = lang.Equals(App.Language);
+                menuLang.Click += ChangeLanguageClick;
+                MenuItems.Add(menuLang);
+            }
             player = new System.Windows.Media.MediaPlayer();
             if (fileService.LoadLastSongAndPosition() != null)
             {
@@ -105,6 +117,7 @@ namespace MusicOrigin.ViewModel
                 }));
             }
         }
+
         //  Play song
         public RelayCommand PlayCommand
         {
@@ -135,6 +148,7 @@ namespace MusicOrigin.ViewModel
                 }));
             }
         }
+
         // Add list of songs in collection that fill list in view
         private void FillSongList(string path)
         {
@@ -181,7 +195,7 @@ namespace MusicOrigin.ViewModel
                         {
                             for (int i = 0; i < Songs.Count; i++)
                             {
-                                
+
                                 if (Songs[shuffleIndexSongList[i]].Path.Equals(SelectedSong.Path))
                                 {
                                     if (i == Songs.Count - 1)
@@ -210,7 +224,7 @@ namespace MusicOrigin.ViewModel
                                 }
                             }
                         }
-                            this.PlayCommand.Execute(this);
+                        this.PlayCommand.Execute(this);
                     }
                     catch (Exception ex)
                     {
@@ -219,6 +233,7 @@ namespace MusicOrigin.ViewModel
                 }));
             }
         }
+
         // Play previous song
         public RelayCommand PreviousSongCommand
         {
@@ -261,7 +276,7 @@ namespace MusicOrigin.ViewModel
                                 }
                             }
                         }
-                            this.PlayCommand.Execute(this);
+                        this.PlayCommand.Execute(this);
                     }
                     catch (Exception ex)
                     {
@@ -270,6 +285,7 @@ namespace MusicOrigin.ViewModel
                 }));
             }
         }
+
         // Shuffle song or not
         public bool IsShuffle
         {
@@ -280,6 +296,7 @@ namespace MusicOrigin.ViewModel
                 OnPropertyChanged("IsShuffle");
             }
         }
+
         // Shuffle Songs
         public RelayCommand ShuffleSongsCommand
         {
@@ -305,6 +322,7 @@ namespace MusicOrigin.ViewModel
                 }));
             }
         }
+
         // Return current song
         public SongModel SelectedSong
         {
@@ -315,6 +333,7 @@ namespace MusicOrigin.ViewModel
                 OnPropertyChanged("SelectedSong");
             }
         }
+
         // Return song volume value
         public double VolumeValue
         {
@@ -337,6 +356,7 @@ namespace MusicOrigin.ViewModel
                 OnPropertyChanged("Duration");
             }
         }
+
         // Playing song or not
         public bool IsPause
         {
@@ -347,6 +367,7 @@ namespace MusicOrigin.ViewModel
                 OnPropertyChanged("IsPause");
             }
         }
+
         // Current song position
         public double SongPosition
         {
@@ -359,6 +380,7 @@ namespace MusicOrigin.ViewModel
                 OnPropertyChanged("SongPosition");
             }
         }
+
         // Settings for timer and start OnTimedEvent for refreshing song position on slider
         private void SwitchOnAutoMoveSlider()
         {
@@ -368,6 +390,7 @@ namespace MusicOrigin.ViewModel
             moveSliderTimer.AutoReset = true;
             moveSliderTimer.Enabled = true;
         }
+
         // Refreshing SongPosition
         private void OnTimedEvent(object source, ElapsedEventArgs e)
         {
@@ -383,6 +406,7 @@ namespace MusicOrigin.ViewModel
 
             }
         }
+
         // Save song position before close application
         public void OnWindowClosing(object sender, CancelEventArgs e)
         {
@@ -404,6 +428,30 @@ namespace MusicOrigin.ViewModel
 
             }
         }
+
+        // Settings when changed language
+        private void LanguageChanged(Object sender, EventArgs e)
+        {
+            foreach (MenuItem menuItem in MenuItems)
+            {
+                CultureInfo cultureInfo = menuItem.Tag as CultureInfo;
+                menuItem.IsChecked = cultureInfo != null && cultureInfo.Equals(App.Language);
+            }
+        }
+
+        // Choose language
+        private void ChangeLanguageClick(Object sender, EventArgs e)
+        {
+            MenuItem menuItem = sender as MenuItem;
+            if (menuItem != null)
+            {
+                CultureInfo lang = menuItem.Tag as CultureInfo;
+                if (lang != null)
+                {
+                    App.Language = lang;
+                }
+            }
+        }
         public void OnPropertyChanged([CallerMemberName]string prop = "")
         {
             if (PropertyChanged != null)
@@ -411,5 +459,6 @@ namespace MusicOrigin.ViewModel
                 PropertyChanged(this, new PropertyChangedEventArgs(prop));
             }
         }
+
     }
 }
