@@ -60,7 +60,7 @@ namespace MusicOrigin.ViewModel
                     {
                         if (player != null)
                         {
-                            if (player.Position.Milliseconds == 0 || SelectedSong.Path != player.Source.LocalPath)
+                            if (SongPosition == 0 || SelectedSong.Path != player.Source.LocalPath)
                             {
                                 this.PlayCommand.Execute(this);
                             }
@@ -108,7 +108,7 @@ namespace MusicOrigin.ViewModel
                             Thread.Sleep(700);
                         }
                         Duration = player.NaturalDuration.TimeSpan.TotalSeconds;
-                        SongPosition = 0;
+                  //      SongPosition = 0;
                         player.Play();
                         SwitchOnAutoMoveSlider();
                         IsPause = false;
@@ -380,8 +380,7 @@ namespace MusicOrigin.ViewModel
         // Current song position
         public double SongPosition
         {
-            get
-            { return player.Position.TotalSeconds; }
+            get { return songPosition; }
             set
             {
                 songPosition = value;
