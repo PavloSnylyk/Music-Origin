@@ -30,7 +30,7 @@
         <Style x:Key="ShuffleImage">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsShuffle}" Value="False">
-                    <Setter Property="Image.Source" Value="../Resources/Play.png" />
+                    <Setter Property="Image.Source" Value="../Resources/Next.png" />
                 </DataTrigger>
                 <DataTrigger Binding="{Binding IsShuffle}" Value="True">
                     <Setter Property="Image.Source" Value="../Resources/random.png" />
