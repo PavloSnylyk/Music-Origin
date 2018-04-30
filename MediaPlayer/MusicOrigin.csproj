@@ -125,9 +125,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\player_play.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\Play.png" />
   </ItemGroup>
   <ItemGroup>
@@ -153,6 +150,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\ApplicationStatus\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Next.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
