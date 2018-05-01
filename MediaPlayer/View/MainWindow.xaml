@@ -8,13 +8,19 @@
         xmlns:command="http://www.galasoft.ch/mvvmlight"
         mc:Ignorable="d"
         ResizeMode="CanMinimize"
+<<<<<<< HEAD
         Title="Music Origin"  Height="350" Width="525" >
+=======
+        
+        Title="{DynamicResource m_Title}"  Height="350" Width="525" >
+>>>>>>> 4dc797685cd7e52e09848626fe63740d28d64fcd
     <Window.Background>
         <ImageBrush ImageSource="../Resources/background.png"/>
+
     </Window.Background>
 
     <Window.Resources>
-        <Style x:Key="image">
+        <Style x:Key="PlayResumeImage">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsPause}" Value="True">
                     <Setter Property="Image.Source" Value="../Resources/Play.png" />
@@ -24,9 +30,25 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
+
+        <Style x:Key="ShuffleImage">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsShuffle}" Value="False">
+                    <Setter Property="Image.Source" Value="../Resources/Next.png" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsShuffle}" Value="True">
+                    <Setter Property="Image.Source" Value="../Resources/random.png" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
+<<<<<<< HEAD
     
     <Grid Margin="0,9,0,-9">
+=======
+
+    <Grid>
+>>>>>>> 4dc797685cd7e52e09848626fe63740d28d64fcd
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="258*"/>
             <ColumnDefinition Width="259*"/>
@@ -54,12 +76,14 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        
-        <!--<Image x:Name="imageBox" Grid.Column="1" HorizontalAlignment="Left" Height="194" Margin="10,10,0,0" Grid.Row="1" VerticalAlignment="Top" Width="229"/>-->
-        <Button x:Name="AddSongButton" Command="{Binding OpenCommand}"  Background="Silver"  Content="Add music to playlist" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="123" Height="20"/>
 
+        <!--<Image x:Name="imageBox" Grid.Column="1" HorizontalAlignment="Left" Height="194" Margin="10,10,0,0" Grid.Row="1" VerticalAlignment="Top" Width="229"/>-->
+        <Button x:Name="AddSongButton" Command="{Binding OpenCommand}"  Background="Silver"  Content="{DynamicResource m_AddSongButton}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="157" Height="20"/>
+        <Menu Margin="175,10,6,0" Grid.Column="1" >
+            <MenuItem x:Name="menuLanguage" Header="{DynamicResource m_menu_Language}" ItemsSource="{Binding MenuItems}" Height="21" Width="74"  />
+        </Menu>
         <Button x:Name="PlayButton" Command="{Binding PlayResumePauseCommand}"  Background="Silver" HorizontalAlignment="Left" Margin="216,5,0,0" Grid.Row="3" VerticalAlignment="Top" Width="50" Height="30" Grid.ColumnSpan="2">
-            <Image x:Name="PlayImage" Style="{StaticResource ResourceKey=image}" Height="23" Width="38"/>
+            <Image Style="{StaticResource ResourceKey=PlayResumeImage}" Height="23" Width="38"/>
         </Button>
         <Button x:Name="NextSongButton" Command="{Binding NextSongCommand}" Background="Silver" HorizontalAlignment="Left" Margin="15,5,0,0" Grid.Row="3" VerticalAlignment="Top" Width="50" Height="30" Grid.Column="1">
             <Image x:Name="NextSongImage" Source="../Resources/nextSong.png" Height="23" Width="38"/>
@@ -69,10 +93,16 @@
         </Button>
         <Slider x:Name="VolumeSlider" IsMoveToPointEnabled="True" Minimum="0"  Maximum="100" Value="{Binding VolumeValue}" Grid.Column="1" HorizontalAlignment="Left" Margin="159,24,0,0" Grid.Row="3" VerticalAlignment="Top" Width="94" Height="20"/>
         <Image x:Name="VolumeImage" Grid.Column="1" Source="../Resources/volume.png" HorizontalAlignment="Left" Height="22" Margin="197,2,0,0" Grid.Row="3" VerticalAlignment="Top" Width="26" RenderTransformOrigin="-0.962,0.591"/>
+<<<<<<< HEAD
         <Label x:Name="BeginSongTimerLabel" Content="{Binding BeginTimerCount}" Foreground="Aqua" FontSize="10" FontWeight="Bold" HorizontalAlignment="Left" Margin="26,181,0,0" Grid.Row="1" VerticalAlignment="Top"/>
         <!-- <Button x:Name="randomButton" Background="Silver" Click="RandomButton"  HorizontalAlignment="Left" Margin="6,5,0,0" Grid.Row="3" VerticalAlignment="Top" Width="50" Height="30">
             <Image x:Name="image5" Source="Resources/random.png" Height="23" Width="38"/>
         </Button>-->
+=======
+        <Button x:Name="ShuffleButton" Command="{Binding ShuffleSongsCommand}" Background="Silver"  HorizontalAlignment="Left" Margin="6,5,0,0" Grid.Row="3" VerticalAlignment="Top" Width="50" Height="30">
+            <Image Style="{StaticResource ResourceKey=ShuffleImage}" Height="23" Width="38"/>
+        </Button>
+>>>>>>> 4dc797685cd7e52e09848626fe63740d28d64fcd
     </Grid>
 
 </Window>

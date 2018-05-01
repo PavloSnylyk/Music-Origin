@@ -6,6 +6,8 @@ using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 using System;
+using MediaPlayer.Model;
+
 namespace MusicOrigin.Services
 {
     public class SongFileService : IFileService
@@ -30,52 +32,58 @@ namespace MusicOrigin.Services
             return songs;
         }
         // Save last played song and position that 
-        public void SaveLastSongAndPosition(string path, double position)
+        public void SaveLastSongAndPosition(PlayerXmlSaveModel playerXmlSaveModel)
         {
+
             string xmlFilePath = Settings.Default.XmlPath;
             XDocument xDocument;
 
             if (new FileInfo(xmlFilePath).Exists)
             {
                 xDocument = XDocument.Load(xmlFilePath);
-                XElement root = xDocument.Element("Player");
+                XElement root = xDocument.Element("Player").Element("Song");
 
-                foreach (XElement xElement in root.Elements("Song").ToList())
-                {
-                    xElement.Element("Path").Value = path;
-                    xElement.Element("Position").Value = position.ToString();
-                }
+                root.Element("FolderPath").Value = playerXmlSaveModel.FolderPath;
+                root.Element("SongName").Value = playerXmlSaveModel.SongName;
+                root.Element("SongPosition").Value = playerXmlSaveModel.SongPosition.ToString();
+
             }
             else
             {
                 xDocument = new XDocument(new XElement("Player",
                    new XElement("Song",
-                   new XElement("Path", path),
-                   new XElement("Position", position)
+                   new XElement("FolderPath", playerXmlSaveModel.FolderPath),
+                   new XElement("SongName", playerXmlSaveModel.SongName),
+                   new XElement("SongPosition", playerXmlSaveModel.SongPosition)
                    )));
             }
             xDocument.Save(xmlFilePath);
         }
 
-        public (string, double) LoadLastSongAndPosition()
+        public PlayerXmlSaveModel LoadLastSongAndPosition()
         {
-
-            string xmlFilePath = Settings.Default.XmlPath;
-            string path = "";
-            double position = 0;
-
-            if (new FileInfo(xmlFilePath).Exists)
+            try
             {
-                XDocument xDocument = XDocument.Load(xmlFilePath);
-                XElement root = xDocument.Element("Player");
-                foreach (XElement xElement in root.Elements("Song").ToList())
-                {
-                    path = xElement.Element("Path").Value;
-                    double.TryParse(xElement.Element("Position").Value, out position);
-                }
-            }
-            return (path, position);
+                string xmlFilePath = Settings.Default.XmlPath;
 
+                if (new FileInfo(xmlFilePath).Exists)
+                {
+                    XDocument xDocument = XDocument.Load(xmlFilePath);
+                    XElement root = xDocument.Element("Player").Element("Song");
+                    PlayerXmlSaveModel playerXmlSaveModel = new PlayerXmlSaveModel
+                    {
+                        SongName = root.Element("SongName").Value,
+                        FolderPath = root.Element("FolderPath").Value,
+                        SongPosition = double.Parse(root.Element("SongPosition").Value)
+                    };
+                    return playerXmlSaveModel;
+                }
+                return null;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
     }
 }

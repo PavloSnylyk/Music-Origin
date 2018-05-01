@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Player>
   <Song>
-    <Path>C:\Users\User\Music\05_blue_stahli_-_scrape.mp3</Path>
-    <Position>0.37587299999999996</Position>
+    <FolderPath>C:\Users\User\Music</FolderPath>
+    <SongName>06_soil_-_halo.mp3</SongName>
+    <SongPosition>18.5077679</SongPosition>
   </Song>
 </Player>
