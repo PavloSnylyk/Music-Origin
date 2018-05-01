@@ -8,7 +8,6 @@
         xmlns:command="http://www.galasoft.ch/mvvmlight"
         mc:Ignorable="d"
         ResizeMode="CanMinimize"
-        
         Title="Music Origin"  Height="350" Width="525" >
     <Window.Background>
         <ImageBrush ImageSource="../Resources/background.png"/>
@@ -27,7 +26,7 @@
         </Style>
     </Window.Resources>
     
-    <Grid>
+    <Grid Margin="0,9,0,-9">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="258*"/>
             <ColumnDefinition Width="259*"/>
@@ -41,11 +40,16 @@
 
         </Grid.RowDefinitions>
         <Slider x:Name="MusicPositionSlider" FontStyle="Oblique" IsSnapToTickEnabled="True" IsMoveToPointEnabled="True" Minimum="0" Maximum="{Binding Duration}"  Value="{Binding SongPosition,Mode=TwoWay}" HorizontalAlignment="Left" Margin="10,5,0,0" Grid.Row="2" VerticalAlignment="Top" RenderTransformOrigin="-0.833,2.5" Height="20" Width="497" Grid.ColumnSpan="2" SmallChange="1" LargeChange="1"/>
-        <ListBox ItemsSource="{Binding Songs}"  SelectedItem="{Binding SelectedSong}" HorizontalAlignment="Left" Background="Silver" Height="197" Margin="10,8,0,0" Grid.Row="1" VerticalAlignment="Top" Width="236">
+        <ListBox ItemsSource="{Binding Songs}" SelectedItem="{Binding SelectedSong}" HorizontalAlignment="Left" Background="Silver" Height="167" Margin="10,8,0,30" Grid.Row="1" VerticalAlignment="Top" Width="236">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Margin="5">
-                        <TextBlock Text="{Binding Path=Title}" />
+                        <TextBlock Text="{Binding Path=Title}">
+                            <TextBlock.InputBindings>
+                                <MouseBinding MouseAction="LeftDoubleClick"
+                                              Command="{Binding DataContext.ListBoxDoubleClickCommand,RelativeSource={RelativeSource AncestorType={x:Type ListBox}}}"/>
+                            </TextBlock.InputBindings>
+                        </TextBlock>
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
@@ -65,6 +69,7 @@
         </Button>
         <Slider x:Name="VolumeSlider" IsMoveToPointEnabled="True" Minimum="0"  Maximum="100" Value="{Binding VolumeValue}" Grid.Column="1" HorizontalAlignment="Left" Margin="159,24,0,0" Grid.Row="3" VerticalAlignment="Top" Width="94" Height="20"/>
         <Image x:Name="VolumeImage" Grid.Column="1" Source="../Resources/volume.png" HorizontalAlignment="Left" Height="22" Margin="197,2,0,0" Grid.Row="3" VerticalAlignment="Top" Width="26" RenderTransformOrigin="-0.962,0.591"/>
+        <Label x:Name="BeginSongTimerLabel" Content="{Binding BeginTimerCount}" Foreground="Aqua" FontSize="10" FontWeight="Bold" HorizontalAlignment="Left" Margin="26,181,0,0" Grid.Row="1" VerticalAlignment="Top"/>
         <!-- <Button x:Name="randomButton" Background="Silver" Click="RandomButton"  HorizontalAlignment="Left" Margin="6,5,0,0" Grid.Row="3" VerticalAlignment="Top" Width="50" Height="30">
             <Image x:Name="image5" Source="Resources/random.png" Height="23" Width="38"/>
         </Button>-->

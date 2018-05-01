@@ -7,6 +7,8 @@ using MusicOrigin.Interfaces;
 using System.Threading;
 using System.Timers;
 using System.Windows;
+using System.Windows.Threading;
+using System.Windows.Input;
 
 namespace MusicOrigin.ViewModel
 {
@@ -20,6 +22,7 @@ namespace MusicOrigin.ViewModel
         private RelayCommand playResumePauseCommand;
         private RelayCommand previousSongCommand;
         private RelayCommand nextSongCommand;
+        private RelayCommand listBoxDoubleClickCommand;
         private SongModel selectedSong;
         private double volumeValue = 50;
         private double songPosition = 0;
@@ -28,7 +31,8 @@ namespace MusicOrigin.ViewModel
         private System.Timers.Timer moveSliderTimer;
         public event PropertyChangedEventHandler PropertyChanged;
         public ObservableCollection<SongModel> Songs { get; set; }
-
+        private DispatcherTimer beginTimer;
+        private TimeSpan beginTimerPosition;
         public MusicOriginViewModel(IDialogService dialogService, IFileService fileService)
         {
             this.dialogService = dialogService;
@@ -36,14 +40,35 @@ namespace MusicOrigin.ViewModel
             Songs = new ObservableCollection<SongModel>();
             player = new System.Windows.Media.MediaPlayer();
 
-            // Temporarily,delete in last version
+            //// Temporarily,delete in last version
+            //{
+            //    var songs = fileService.Open("C:\\Users\\User\\Music");
+            //    Songs.Clear();
+            //    foreach (var song in songs)
+            //        Songs.Add(song);
+            //}
+
+            beginTimer = new DispatcherTimer();
+            beginTimer.Interval = TimeSpan.FromSeconds(1);
+            beginTimer.Tick += BeginTimer_Tick;
+        }
+
+
+        //Return progress timer value in minutes:seconds
+        public string BeginTimerCount
+        {
+            get
             {
-                var songs = fileService.Open("C:\\Users\\User\\Music");
-                Songs.Clear();
-                foreach (var song in songs)
-                    Songs.Add(song);
+                beginTimerPosition = TimeSpan.FromSeconds(SongPosition);
+                return String.Format("{0:00}:{1:00}", beginTimerPosition.Minutes, beginTimerPosition.Seconds);
             }
         }
+
+        private void BeginTimer_Tick(object sender, EventArgs e)
+        {
+            OnPropertyChanged("BeginTimerCount");
+        }
+
         // Play Resume Pause song
         public RelayCommand PlayResumePauseCommand
         {
@@ -64,11 +89,13 @@ namespace MusicOrigin.ViewModel
                                 if (IsPause == false)
                                 {
                                     player.Pause();
+                                    beginTimer.Stop();
                                     IsPause = true;
                                 }
                                 else
                                 {
                                     player.Play();
+                                    beginTimer.Start();
                                     IsPause = false;
                                 }
                             }
@@ -101,8 +128,9 @@ namespace MusicOrigin.ViewModel
                         Duration = player.NaturalDuration.TimeSpan.TotalSeconds;
                         SongPosition = 0;
                         player.Play();
+                        beginTimer.Start();
                         SwitchOnAutoMoveSlider();
-                        IsPause = false;
+                        IsPause = false;                       
                     }
                     catch (Exception ex)
                     {
@@ -198,6 +226,15 @@ namespace MusicOrigin.ViewModel
                 }));
             }
         }
+
+        public RelayCommand ListBoxDoubleClickCommand
+        {
+            get
+            {
+                return listBoxDoubleClickCommand = new RelayCommand((obj) => PlayCommand.Execute(this));
+            }
+        }
+
         // Return current song
         public SongModel SelectedSong
         {
