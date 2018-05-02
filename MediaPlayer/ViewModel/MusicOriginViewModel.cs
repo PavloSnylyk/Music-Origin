@@ -7,17 +7,14 @@ using MusicOrigin.Interfaces;
 using System.Threading;
 using System.Timers;
 using System.Windows;
-<<<<<<< HEAD
 using System.Windows.Threading;
 using System.Windows.Input;
-=======
 using System.Collections;
 using System.Collections.Generic;
 using MediaPlayer.Model;
 using System.Linq;
 using System.Globalization;
 using System.Windows.Controls;
->>>>>>> 4dc797685cd7e52e09848626fe63740d28d64fcd
 
 namespace MusicOrigin.ViewModel
 {
@@ -31,11 +28,8 @@ namespace MusicOrigin.ViewModel
         private RelayCommand playResumePauseCommand;
         private RelayCommand previousSongCommand;
         private RelayCommand nextSongCommand;
-<<<<<<< HEAD
         private RelayCommand listBoxDoubleClickCommand;
-=======
         private RelayCommand shuffleSongsCommand;
->>>>>>> 4dc797685cd7e52e09848626fe63740d28d64fcd
         private SongModel selectedSong;
         private double volumeValue = 50;
         private double songPosition = 0;
@@ -45,14 +39,11 @@ namespace MusicOrigin.ViewModel
         private System.Timers.Timer moveSliderTimer;
         public event PropertyChangedEventHandler PropertyChanged;
         public ObservableCollection<SongModel> Songs { get; set; }
-<<<<<<< HEAD
         private DispatcherTimer beginTimer;
         private TimeSpan beginTimerPosition;
-=======
         public ObservableCollection<MenuItem> MenuItems { get; set; }
         private List<int> shuffleIndexSongList;
 
->>>>>>> 4dc797685cd7e52e09848626fe63740d28d64fcd
         public MusicOriginViewModel(IDialogService dialogService, IFileService fileService)
         {
             this.dialogService = dialogService;
@@ -60,19 +51,12 @@ namespace MusicOrigin.ViewModel
             Songs = new ObservableCollection<SongModel>();
             MenuItems = new ObservableCollection<MenuItem>();
             player = new System.Windows.Media.MediaPlayer();
-<<<<<<< HEAD
-
-            //// Temporarily,delete in last version
-            //{
-            //    var songs = fileService.Open("C:\\Users\\User\\Music");
-            //    Songs.Clear();
-            //    foreach (var song in songs)
-            //        Songs.Add(song);
-            //}
 
             beginTimer = new DispatcherTimer();
             beginTimer.Interval = TimeSpan.FromSeconds(1);
             beginTimer.Tick += BeginTimer_Tick;
+            InitializeLanguage();
+            InitializeXml(fileService);
         }
 
 
@@ -84,10 +68,6 @@ namespace MusicOrigin.ViewModel
                 beginTimerPosition = TimeSpan.FromSeconds(SongPosition);
                 return String.Format("{0:00}:{1:00}", beginTimerPosition.Minutes, beginTimerPosition.Seconds);
             }
-=======
-            InitializeLanguage();
-            InitializeXml(fileService);
->>>>>>> 4dc797685cd7e52e09848626fe63740d28d64fcd
         }
 
         private void BeginTimer_Tick(object sender, EventArgs e)
@@ -121,13 +101,10 @@ namespace MusicOrigin.ViewModel
                                 else
                                 {
                                     player.Play();
-<<<<<<< HEAD
                                     beginTimer.Start();
-=======
                                     Duration = player.NaturalDuration.TimeSpan.TotalSeconds;
                                     SongPosition = player.Position.TotalSeconds;
                                     SwitchOnAutoMoveSlider();
->>>>>>> 4dc797685cd7e52e09848626fe63740d28d64fcd
                                     IsPause = false;
                                 }
                             }
@@ -159,11 +136,11 @@ namespace MusicOrigin.ViewModel
                             Thread.Sleep(700);
                         }
                         Duration = player.NaturalDuration.TimeSpan.TotalSeconds;
-                  //      SongPosition = 0;
+                        //      SongPosition = 0;
                         player.Play();
                         beginTimer.Start();
                         SwitchOnAutoMoveSlider();
-                        IsPause = false;                       
+                        IsPause = false;
                     }
                     catch (Exception ex)
                     {
@@ -310,13 +287,13 @@ namespace MusicOrigin.ViewModel
             }
         }
 
-<<<<<<< HEAD
         public RelayCommand ListBoxDoubleClickCommand
         {
             get
             {
                 return listBoxDoubleClickCommand = new RelayCommand((obj) => PlayCommand.Execute(this));
-=======
+            }
+        } 
         // Shuffle song or not
         public bool IsShuffle
         {
@@ -351,7 +328,6 @@ namespace MusicOrigin.ViewModel
                         dialogService.ShowMessage(ex.Message);
                     }
                 }));
->>>>>>> 4dc797685cd7e52e09848626fe63740d28d64fcd
             }
         }
 
